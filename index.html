@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giới Thiệu - TedigiVN</title>
+    <style>
+        /* CÀI ĐẶT CHUNG */
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f4f7f6; color: #333; line-height: 1.6; }
+        
+        /* HEADER & MENU */
+        header { background: #1a73e8; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .btn { border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-login { background: white; color: #1a73e8; }
+        .btn-login:hover { background: #e8f0fe; }
+        .btn-admin { background: #ff9800; color: white; margin-right: 10px; }
+        .btn-admin:hover { background: #e68a00; }
+        .btn-logout { background: #ff4d4d; color: white; }
+        .btn-logout:hover { background: #cc0000; }
+
+        .main-menu { background: white; padding: 0 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; align-items: center; flex-wrap: wrap; position: sticky; top: 0; z-index: 999; }
+        .nav-link { color: #333; text-decoration: none; font-weight: bold; padding: 15px 20px; display: inline-block; transition: 0.3s; border-bottom: 3px solid transparent; }
+        .nav-link:hover, .nav-link.active { color: #1a73e8; border-bottom: 3px solid #1a73e8; background: #f9f9f9; }
+
+        /* MENU DROPDOWN */
+        .dropdown { position: relative; display: inline-block; }
+        .dropdown-content { display: none; position: absolute; background-color: white; min-width: 220px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.15); z-index: 1000; border-radius: 0 0 8px 8px; overflow: hidden; top: 100%; left: 0; }
+        .dropdown-content a { color: #555; padding: 12px 16px; text-decoration: none; display: block; border-bottom: 1px solid #eee; font-weight: normal; }
+        .dropdown-content a:hover { background-color: #f4f7f6; color: #1a73e8; padding-left: 20px; transition: 0.3s; }
+        .dropdown:hover .dropdown-content { display: block; } 
+
+        /* BANNER CHÍNH */
+        .hero { background: linear-gradient(135deg, #0d47a1, #1976d2); color: white; padding: 80px 20px; text-align: center; }
+        .hero h1 { font-size: 3em; margin: 0 0 20px 0; letter-spacing: 1px; }
+        .hero p { font-size: 1.2em; max-width: 800px; margin: 0 auto 30px auto; opacity: 0.9; }
+        .btn-primary { background: #ff9800; color: white; padding: 15px 30px; text-decoration: none; font-size: 1.1em; font-weight: bold; border-radius: 30px; transition: 0.3s; display: inline-block; box-shadow: 0 4px 10px rgba(255, 152, 0, 0.3); }
+        .btn-primary:hover { background: #e68a00; transform: translateY(-3px); box-shadow: 0 6px 15px rgba(255, 152, 0, 0.4); }
+
+        /* KHU VỰC NỘI DUNG */
+        .container { width: 90%; max-width: 1200px; margin: 50px auto; }
+        .section-title { text-align: center; margin-bottom: 40px; margin-top: 60px; }
+        .section-title h2 { color: #1a73e8; font-size: 2.2em; margin-bottom: 10px; }
+        .section-title p { color: #777; font-size: 1.1em; max-width: 700px; margin: 0 auto; }
+
+        /* LƯỚI TÍNH NĂNG */
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .feature-box { background: white; padding: 30px; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; border-top: 4px solid transparent; }
+        .feature-box:hover { transform: translateY(-10px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-top: 4px solid #1a73e8; }
+        .feature-icon { font-size: 3em; margin-bottom: 15px; display: block; }
+        .feature-box h3 { color: #333; margin-top: 0; }
+
+        /* CÂU CHUYỆN CÔNG TY */
+        .about-story { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; gap: 40px; align-items: center; margin-top: 50px; }
+        .about-text { flex: 1; }
+        .about-text h3 { color: #1a73e8; font-size: 1.8em; margin-top: 0; }
+        .about-text p { color: #555; text-align: justify; }
+
+        /* === CSS MỚI: KHU VỰC BLOG / TIN TỨC === */
+        .blog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
+        .blog-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; }
+        .blog-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+        .blog-img { width: 100%; height: 200px; object-fit: cover; }
+        .blog-content { padding: 25px; }
+        .blog-tag { background: #e8f0fe; color: #1a73e8; padding: 5px 10px; border-radius: 4px; font-size: 0.8em; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; display: inline-block; }
+        .blog-content h3 { margin: 0 0 15px 0; font-size: 1.3em; color: #333; line-height: 1.4; }
+        .blog-content p { color: #666; font-size: 0.95em; margin-bottom: 20px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .read-more { color: #1a73e8; text-decoration: none; font-weight: bold; font-size: 0.9em; display: inline-flex; align-items: center; transition: 0.3s; }
+        .read-more:hover { color: #0d47a1; letter-spacing: 0.5px; }
+        .read-more::after { content: ' →'; margin-left: 5px; }
+        
+        /* FOOTER */
+        footer { background: #333; color: white; text-align: center; padding: 20px; margin-top: 50px; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2 style="margin: 0; letter-spacing: 1px;">TedigiVN</h2>
+        <div id="user-menu"></div>
+    </header>
+
+    <nav class="main-menu">
+        <a href="index.html" class="nav-link active">Giới thiệu</a>
+        <div class="dropdown">
+            <a href="products.html?cat=all" class="nav-link">Sản phẩm ▼</a>
+            <div class="dropdown-content">
+                <a href="products.html?cat=pos">Máy POS bán hàng</a>
+                <a href="products.html?cat=bill">Máy in bill</a>
+                <a href="products.html?cat=scan">Máy quét mã vạch</a>
+                <a href="products.html?cat=print">Máy in công nghiệp</a>
+                <a href="products.html?cat=all">Tất cả sản phẩm</a>
+            </div>
+        </div>
+        <a href="#" class="nav-link">Dịch vụ & Bảo hành</a>
+        <a href="#news-section" class="nav-link">Tin tức</a>
+        <a href="#" class="nav-link">Liên hệ</a>
+    </nav>
+
+    <div class="hero">
+        <h1>Giải pháp tự động hóa bán lẻ toàn diện</h1>
+        <p>TedigiVN cung cấp các thiết bị mã vạch, máy POS và giải pháp quản lý bán hàng hàng đầu dành cho siêu thị, chuỗi cửa hàng và doanh nghiệp sản xuất.</p>
+        <a href="products.html?cat=all" class="btn-primary">Xem Thiết Bị Ngay</a>
+    </div>
+
+    <div class="container">
+        
+        <div class="section-title">
+            <h2>Tại sao đối tác tin chọn TedigiVN?</h2>
+            <p>Chúng tôi không chỉ bán thiết bị, chúng tôi cung cấp sự an tâm cho doanh nghiệp của bạn.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-box"><span class="feature-icon">🛡️</span><h3>Chính Hãng 100%</h3><p>Nhập khẩu chính ngạch từ các thương hiệu hàng đầu thế giới.</p></div>
+            <div class="feature-box"><span class="feature-icon">⚙️</span><h3>Bảo Hành Siêu Tốc</h3><p>Hỗ trợ cài đặt tận nơi, xử lý sự cố online 24/7, không gián đoạn kinh doanh.</p></div>
+            <div class="feature-box"><span class="feature-icon">💡</span><h3>Giải Pháp Đồng Bộ</h3><p>Tương thích hoàn hảo với phần mềm KiotViet, Sapo, Haravan.</p></div>
+        </div>
+
+        <div class="about-story">
+            <div class="about-text">
+                <h3>Sứ mệnh của TedigiVN</h3>
+                <p>Thành lập với khát vọng số hóa quy trình quản lý cho hàng triệu cửa hàng bán lẻ tại Việt Nam, <b>TedigiVN</b> hiểu rằng một hệ thống thanh toán và quản lý kho mượt mà là chìa khóa để giảm thiểu thất thoát và tăng doanh thu.</p>
+                <p>Công nghệ không phải là chi phí, công nghệ là khoản đầu tư sinh lời giúp bạn phục vụ khách hàng nhanh hơn và chuyên nghiệp hơn.</p>
+            </div>
+        </div>
+
+        <div class="section-title" id="news-section">
+            <h2>Kiến thức & Kinh nghiệm bán lẻ</h2>
+            <p>Khám phá lý do tại sao các thiết bị tự động hóa lại là "vũ khí bí mật" của các chuỗi cửa hàng thành công.</p>
+        </div>
+
+        <div class="blog-grid">
+            <div class="blog-card">
+                <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Máy POS" class="blog-img">
+                <div class="blog-content">
+                    <span class="blog-tag">Giải pháp POS</span>
+                    <h3>Tại sao mở cửa hàng bắt buộc phải có Máy POS tính tiền?</h3>
+                    <p>Nhiều chủ shop vẫn giữ thói quen ghi chép sổ sách thủ công hoặc tính nhẩm. Điều này không chỉ làm chậm tốc độ phục vụ lúc đông khách mà còn gây thất thoát doanh thu không rõ nguyên nhân. Máy POS giúp chuẩn hóa quy trình, tính tiền chính xác 100% và mang lại hình ảnh cực kỳ chuyên nghiệp.</p>
+                    <a href="#" class="read-more">Xem chi tiết</a>
+                </div>
+            </div>
+
+            <div class="blog-card">
+                <img src="https://images.unsplash.com/photo-1574936145840-28808d77a0b6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Máy in bill" class="blog-img">
+                <div class="blog-content">
+                    <span class="blog-tag">Kinh nghiệm</span>
+                    <h3>Tránh mất khách hàng chỉ với một chiếc Máy In Bill nhỏ gọn</h3>
+                    <p>Hóa đơn giấy chứng minh sự minh bạch trong giao dịch. Khách hàng có thể dễ dàng kiểm tra lại món đồ đã mua, hạn chế tối đa tranh cãi. Đối với chủ cửa hàng, việc yêu cầu nhân viên phải in bill đưa cho khách là cách tốt nhất để chống gian lận, giấu doanh thu tại quầy thu ngân.</p>
+                    <a href="#" class="read-more">Xem chi tiết</a>
+                </div>
+            </div>
+
+            <div class="blog-card">
+                <img src="https://images.unsplash.com/photo-1607082349566-187342175e2f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Máy quét mã vạch" class="blog-img">
+                <div class="blog-content">
+                    <span class="blog-tag">Quản lý kho</span>
+                    <h3>Quản lý hàng nghìn sản phẩm không sai một ly nhờ Mã vạch</h3>
+                    <p>Bạn có bao giờ điên đầu vì không nhớ nổi giá của hàng trăm mã hàng khác nhau? Nhập nhầm giá bán cho khách? Tích hợp máy quét mã vạch đa tia kết hợp phần mềm giúp thu ngân chỉ tốn 1 giây để chốt đơn một sản phẩm, đồng thời kho tự động trừ đi chính xác số lượng hàng đã bán.</p>
+                    <a href="#" class="read-more">Xem chi tiết</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>© 2024 TedigiVN. Bản quyền thuộc về Công ty TNHH Công nghệ Tedigi Việt Nam.</p>
+    </footer>
+
+    <script>
+        const userMenu = document.getElementById('user-menu');
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        const currentUser = localStorage.getItem('currentUser');
+        const userRole = localStorage.getItem('userRole');
+
+        if (isLoggedIn === "true") {
+            userMenu.innerHTML = `
+                <span style="margin-right: 15px; font-size: 15px;">Xin chào, <b>${currentUser}</b>!</span>
+                <button class="btn btn-admin" onclick="window.location.href='admin.html'">Vào Quản Trị</button>
+                <button class="btn btn-logout" onclick="logout()">Đăng xuất</button>
+            `;
+        } else {
+            userMenu.innerHTML = `
+                <button class="btn btn-login" onclick="window.location.href='login.html'">Đăng nhập</button>
+            `;
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.reload(); 
+        }
+    </script>
+</body>
+</html>

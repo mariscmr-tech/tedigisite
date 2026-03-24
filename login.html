@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Nhập Hệ Thống - TedigiVN</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .login-box { background: white; padding: 40px 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 320px; text-align: center; }
+        .logo { font-size: 24px; color: #1a73e8; font-weight: bold; margin-bottom: 20px; display: block; letter-spacing: 1px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
+        input:focus { outline: none; border-color: #1a73e8; box-shadow: 0 0 5px rgba(26, 115, 232, 0.3); }
+        button { width: 100%; padding: 12px; background: #1a73e8; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; margin-top: 10px; }
+        button:hover { background: #1557b0; }
+        #message { margin-top: 15px; font-size: 14px; font-weight: bold; min-height: 20px; }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .back-link { display: inline-block; margin-top: 20px; color: #666; text-decoration: none; font-size: 14px; transition: 0.3s; }
+        .back-link:hover { color: #1a73e8; }
+    </style>
+</head>
+<body>
+
+    <div class="login-box">
+        <span class="logo">TedigiVN</span>
+        <h3 style="margin-top: 0; color: #333;">Đăng nhập Quản trị</h3>
+        
+        <form id="loginForm">
+            <input type="text" id="username" placeholder="Tên tài khoản" required autocomplete="off">
+            <input type="password" id="password" placeholder="Mật khẩu" required>
+            <button type="submit" id="loginBtn">Đăng nhập</button>
+        </form>
+        
+        <p id="message"></p>
+        <a href="index.html" class="back-link">← Trở về Trang chủ</a>
+    </div>
+
+    <script>
+        // 1. DÁN LINK GOOGLE SCRIPT CỦA BẠN VÀO ĐÂY
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwzPIf4AFl1eWIiSIXSc_OXeC56Wce6_vQHvDeS04nUhMxvbxcLPpYo-XTrLmDhQLsR/exec";
+
+        const loginForm = document.getElementById('loginForm');
+        const messageEl = document.getElementById('message');
+        const loginBtn = document.getElementById('loginBtn');
+
+        // KIỂM TRA: Nếu đã đăng nhập rồi thì đẩy thẳng vào trang admin luôn, không bắt đăng nhập lại
+        if (localStorage.getItem('isLoggedIn') === "true") {
+            window.location.href = "admin.html";
+        }
+
+        loginForm.addEventListener('submit', function(event) {
+            event.preventDefault(); 
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+
+            messageEl.textContent = "Đang kiểm tra dữ liệu...";
+            messageEl.className = ""; 
+            loginBtn.disabled = true; 
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: 'login', username: user, password: pass })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    messageEl.textContent = data.message;
+                    messageEl.className = "success";
+                    
+                    // Lưu thông tin và quyền hạn
+                    localStorage.setItem("isLoggedIn", "true");
+                    localStorage.setItem("currentUser", user);
+                    localStorage.setItem("userRole", data.role); 
+
+                    // Đăng nhập thành công -> Bay vào trang Admin
+                    setTimeout(() => { window.location.href = "admin.html"; }, 1000);
+                } else {
+                    messageEl.textContent = data.message;
+                    messageEl.className = "error";
+                }
+            })
+            .catch(error => {
+                messageEl.textContent = "Lỗi kết nối máy chủ!";
+                messageEl.className = "error";
+            })
+            .finally(() => { loginBtn.disabled = false; });
+        });
+    </script>
+</body>
+</html>

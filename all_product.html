@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sản Phẩm - TedigiVN</title>
+    <style>
+        /* CÀI ĐẶT CHUNG VÀ MENU (Giữ nguyên form chuẩn) */
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f4f7f6; color: #333; line-height: 1.6; }
+        header { background: #1a73e8; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .main-menu { background: white; padding: 0 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; align-items: center; flex-wrap: wrap; position: sticky; top: 0; z-index: 999; }
+        .nav-link { color: #333; text-decoration: none; font-weight: bold; padding: 15px 20px; display: inline-block; transition: 0.3s; border-bottom: 3px solid transparent; }
+        .nav-link:hover, .nav-link.active { color: #1a73e8; border-bottom: 3px solid #1a73e8; background: #f9f9f9; }
+        
+        .dropdown { position: relative; display: inline-block; }
+        .dropdown-content { display: none; position: absolute; background-color: white; min-width: 220px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.15); z-index: 1000; border-radius: 0 0 8px 8px; top: 100%; left: 0; }
+        .dropdown-content a { color: #555; padding: 12px 16px; text-decoration: none; display: block; border-bottom: 1px solid #eee; }
+        .dropdown-content a:hover { background-color: #f4f7f6; color: #1a73e8; padding-left: 20px; transition: 0.3s; }
+        .dropdown:hover .dropdown-content { display: block; }
+
+        /* CSS KHU VỰC SẢN PHẨM */
+        .container { width: 90%; max-width: 1200px; margin: 40px auto; min-height: 50vh; }
+        .page-title { border-bottom: 2px solid #1a73e8; padding-bottom: 10px; margin-bottom: 30px; color: #1a73e8; display: flex; justify-content: space-between; align-items: flex-end; }
+        
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .product-card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+        
+        /* Chỉnh lại ảnh để hiện đẹp nhất */
+        .product-card img { width: 100%; height: 200px; object-fit: contain; border-radius: 5px; margin-bottom: 15px; background: #fff; }
+        .product-info h3 { margin: 0 0 10px 0; font-size: 1.1em; color: #333; height: 45px; overflow: hidden; }
+        .price { color: #e44d26; font-size: 1.3em; font-weight: bold; margin: 0 0 15px 0; }
+        
+        .buy-btn { background: #28a745; color: white; border: none; padding: 12px; width: 100%; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 1em; }
+        .buy-btn:hover { background: #218838; }
+
+        #loading { text-align: center; font-size: 1.2em; color: #666; margin-top: 50px; }
+        footer { background: #333; color: white; text-align: center; padding: 20px; margin-top: 50px; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2 style="margin: 0; letter-spacing: 1px;">TedigiVN</h2>
+        <span style="font-weight: bold;">Hotline: 1900 xxxx</span>
+    </header>
+
+    <nav class="main-menu">
+        <a href="index.html" class="nav-link">Giới thiệu</a>
+        <div class="dropdown">
+            <a href="products.html?cat=all" class="nav-link active">Sản phẩm ▼</a>
+            <div class="dropdown-content">
+                <a href="products.html?cat=pos">Máy POS bán hàng</a>
+                <a href="products.html?cat=bill">Máy in bill</a>
+                <a href="products.html?cat=scan">Máy quét mã vạch</a>
+                <a href="products.html?cat=print">Máy in công nghiệp</a>
+                <a href="products.html?cat=all">Tất cả sản phẩm</a>
+            </div>
+        </div>
+        <a href="#" class="nav-link">Dịch vụ & Bảo hành</a>
+        <a href="#" class="nav-link">Tin tức</a>
+        <a href="#" class="nav-link">Liên hệ</a>
+    </nav>
+
+    <div class="container">
+        <div class="page-title">
+            <h2 id="display-title" style="margin: 0;">Đang tải danh mục...</h2>
+            <span id="product-count" style="color: #666; font-size: 0.9em;"></span>
+        </div>
+        
+        <div id="loading">⏳ Đang tải dữ liệu sản phẩm từ hệ thống...</div>
+        
+        <!-- Nơi chứa sản phẩm -->
+        <div class="product-grid" id="product-container"></div>
+    </div>
+
+    <footer><p>© 2024 TedigiVN. Bản quyền thuộc về Công ty TNHH Công nghệ Tedigi Việt Nam.</p></footer>
+
+    <script>
+        // 🚨 1. DÁN LINK GOOGLE SCRIPT MỚI NHẤT VÀO ĐÂY
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwzPIf4AFl1eWIiSIXSc_OXeC56Wce6_vQHvDeS04nUhMxvbxcLPpYo-XTrLmDhQLsR/exec";
+
+        // 2. TỪ ĐIỂN DỊCH ĐƯỜNG LINK SANG TÊN DANH MỤC THẬT
+        const categoryMap = {
+            'pos': 'Máy POS bán hàng',
+            'bill': 'Máy in bill',
+            'scan': 'Máy quét mã vạch',
+            'print': 'Máy in công nghiệp',
+            'all': 'Tất cả sản phẩm'
+        };
+
+        // Lấy đuôi link (Ví dụ: khách đang ở link products.html?cat=pos thì catID = 'pos')
+        const urlParams = new URLSearchParams(window.location.search);
+        let catID = urlParams.get('cat');
+        if (!catID || !categoryMap[catID]) catID = 'all'; // Mặc định là hiện tất cả
+
+        const targetCategory = categoryMap[catID];
+        
+        // Đổi tiêu đề trang web
+        document.getElementById('display-title').innerText = targetCategory;
+        document.title = targetCategory + " - TedigiVN";
+
+        // 3. KÉO DỮ LIỆU TỪ GOOGLE SHEETS VÀ HIỂN THỊ
+        fetch(SCRIPT_URL) // Mặc định là GET, sẽ chạy hàm doGet() trong Script của bạn
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('loading').style.display = 'none'; // Tắt chữ "Đang tải"
+                const container = document.getElementById('product-container');
+                let count = 0;
+
+                // Duyệt qua từng sản phẩm lấy về được
+                data.forEach(item => {
+                    // Nếu khách chọn "Tất cả" HOẶC mục của sản phẩm trùng với mục khách đang xem -> Thì hiển thị
+                    if (targetCategory === 'Tất cả sản phẩm' || item.category === targetCategory) {
+                        count++;
+                        
+                        // Định dạng tiền tệ cho đẹp (Ví dụ: 5500000 -> 5.500.000)
+                        const formattedPrice = parseInt(item.price).toLocaleString('vi-VN');
+                        
+                        // Xử lý nếu Admin quên nhập link ảnh
+                        const safeImage = item.image ? item.image : "https://via.placeholder.com/300x200?text=Chưa+có+ảnh";
+
+                        // Tạo thẻ HTML cho sản phẩm
+                        const cardHTML = `
+                            <div class="product-card">
+                                <img src="${safeImage}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/300x200?text=Lỗi+ảnh'">
+                                <div class="product-info">
+                                    <h3>${item.name}</h3>
+                                    <p class="price">${formattedPrice} đ</p>
+                                </div>
+                                <button class="buy-btn" onclick="alert('Đã thêm ${item.name} vào giỏ hàng!')">Thêm vào giỏ</button>
+                            </div>
+                        `;
+                        container.innerHTML += cardHTML;
+                    }
+                });
+
+                // Hiển thị số lượng tìm thấy
+                document.getElementById('product-count').innerText = `Hiển thị ${count} sản phẩm`;
+
+                // Nếu không có sản phẩm nào
+                if (count === 0) {
+                    container.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; color: #888; font-size: 1.1em;">Rất tiếc, chưa có sản phẩm nào trong danh mục này.</p>`;
+                }
+            })
+            .catch(error => {
+                console.error("Lỗi:", error);
+                document.getElementById('loading').innerHTML = `<span style="color:red;">❌ Không thể kết nối đến máy chủ dữ liệu. Vui lòng tải lại trang.</span>`;
+            });
+    </script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Quản Trị - TedigiVN</title>
+    <script>
+        if (localStorage.getItem('isLoggedIn') !== "true") {
+            window.location.href = "login.html"; 
+        }
+    </script>
+    <style>
+        body { font-family: 'Segoe UI', Arial; background: #f0f2f5; margin: 0; }
+        header { background: #333; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-logout { background: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; }
+        .container { width: 90%; max-width: 1000px; margin: 30px auto; }
+        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 25px; }
+        h2 { margin-top: 0; color: #1a73e8; border-bottom: 2px solid #f0f2f5; padding-bottom: 10px; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .btn-submit { background: #28a745; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; }
+        
+        #approval-section { display: none; }
+        .pending-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #eee; border-radius: 4px; margin-bottom: 10px; background: #fffcf5; transition: 0.3s; }
+        .pending-item:hover { background: #fdf5e6; border-color: #ffc107; }
+        
+        .btn-approve { background: #1a73e8; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-reject { background: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-left: 5px; }
+        .badge { background: #ffc107; color: #333; padding: 3px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+        
+        /* CSS cho ảnh thu nhỏ */
+        .thumb-img { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; margin-right: 15px; }
+        .item-info { display: flex; align-items: center; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h3 style="margin: 0;">TedigiVN Dashboard</h3>
+        <div>
+            <span style="margin-right: 15px;">Xin chào, <b id="admin-name">User</b> (<span id="admin-role">Role</span>)</span>
+            <button class="btn-logout" onclick="logout()">Đăng xuất</button>
+            <button onclick="window.location.href='index.html'" style="margin-left:10px; padding: 8px;">Xem Web</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>Đăng Sản Phẩm Mới</h2>
+            <form id="addForm">
+                <div class="form-group">
+                    <label>Tên thiết bị / Sản phẩm</label>
+                    <input type="text" id="pName" required placeholder="VD: Máy in bill Xprinter K80">
+                </div>
+                <div class="form-group">
+                    <label>Giá bán (VNĐ)</label>
+                    <input type="number" id="pPrice" required placeholder="VD: 1200000">
+                </div>
+                <div class="form-group">
+                    <label>Danh mục</label>
+                    <select id="pCategory" required>
+                        <option value="Máy POS bán hàng">Máy POS bán hàng</option>
+                        <option value="Máy in bill">Máy in bill</option>
+                        <option value="Máy quét mã vạch">Máy quét mã vạch</option>
+                        <option value="Máy in công nghiệp">Máy in công nghiệp</option>
+                    </select>
+                </div>
+                <!-- MỚI: Ô NHẬP LINK ẢNH -->
+                <div class="form-group">
+                    <label>Link ảnh sản phẩm</label>
+                    <input type="url" id="pImage" required placeholder="Dán link ảnh (https://...)">
+                    <small style="color: #666;">Mẹo: Chuột phải vào ảnh bất kỳ trên mạng chọn "Sao chép địa chỉ hình ảnh" và dán vào đây.</small>
+                </div>
+
+                <button type="submit" class="btn-submit" id="addBtn">Gửi bài đăng</button>
+                <p id="addStatus" style="text-align: center; font-weight: bold; margin-top: 15px;"></p>
+            </form>
+        </div>
+
+        <div class="card" id="approval-section">
+            <h2>Khu Vực Phê Duyệt <span class="badge" id="pending-count">0</span></h2>
+            <div id="pending-list"><p>Đang tải dữ liệu...</p></div>
+        </div>
+    </div>
+
+    <script>
+        // 🚨 NHỚ DÁN LINK SCRIPT MỚI TRIỂN KHAI VÀO ĐÂY!
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwzPIf4AFl1eWIiSIXSc_OXeC56Wce6_vQHvDeS04nUhMxvbxcLPpYo-XTrLmDhQLsR/exec";
+        
+        const currentUser = localStorage.getItem('currentUser');
+        const userRole = localStorage.getItem('userRole');
+
+        document.getElementById('admin-name').innerText = currentUser;
+        document.getElementById('admin-role').innerText = userRole === 'admin' ? 'Quản trị viên' : 'Nhân viên';
+
+        if (userRole === 'admin') {
+            document.getElementById('approval-section').style.display = 'block';
+            document.getElementById('addBtn').innerText = "Đăng bài trực tiếp (Admin)";
+            loadPendingList(); 
+        } else {
+            document.getElementById('addBtn').innerText = "Gửi bài (Chờ duyệt)";
+        }
+
+        // --- GỬI BÀI ---
+        document.getElementById('addForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('addBtn');
+            const statusMsg = document.getElementById('addStatus');
+            btn.disabled = true; statusMsg.innerText = "Đang xử lý..."; statusMsg.style.color = "blue";
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({
+                    action: 'add_product', role: userRole, username: currentUser,
+                    name: document.getElementById('pName').value, 
+                    price: document.getElementById('pPrice').value, 
+                    category: document.getElementById('pCategory').value,
+                    image: document.getElementById('pImage').value // LẤY LINK ẢNH TỪ FORM
+                })
+            }).then(res => res.json()).then(data => {
+                statusMsg.innerText = data.message;
+                statusMsg.style.color = data.status === "success" ? "green" : "red";
+                document.getElementById('addForm').reset();
+                if(userRole === 'admin') loadPendingList();
+            }).catch(() => {
+                statusMsg.innerText = "Lỗi kết nối!"; statusMsg.style.color = "red";
+            }).finally(() => { btn.disabled = false; });
+        });
+
+        // --- TẢI DANH SÁCH CHỜ ---
+        function loadPendingList() {
+            fetch(SCRIPT_URL, {
+                method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: 'get_pending', role: userRole })
+            }).then(res => res.json()).then(data => {
+                const listEl = document.getElementById('pending-list');
+                document.getElementById('pending-count').innerText = data.length;
+                if (data.length === 0) { listEl.innerHTML = "<p style='color: green;'>✅ Không có bài đăng nào cần duyệt.</p>"; return; }
+
+                listEl.innerHTML = "";
+                data.forEach(item => {
+                    // CẬP NHẬT GIAO DIỆN HIỂN THỊ THÊM ẢNH THU NHỎ
+                    listEl.innerHTML += `
+                        <div class="pending-item">
+                            <div class="item-info">
+                                <img src="${item.image}" class="thumb-img" onerror="this.src='https://via.placeholder.com/60?text=Lỗi+ảnh'">
+                                <div>
+                                    <b style="color:#1a73e8; font-size: 1.1em;">${item.name}</b><br>
+                                    <span style="font-size: 13px; color: #666;">Giá: <b>${parseInt(item.price).toLocaleString()}đ</b> | Mục: ${item.category} | Đăng bởi: <b>${item.author}</b></span>
+                                </div>
+                            </div>
+                            <div>
+                                <button class="btn-approve" onclick="approveProduct('${item.name}')">✔️ Duyệt</button>
+                                <button class="btn-reject" onclick="deleteProduct('${item.name}')">❌ Từ chối</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        function approveProduct(productName) {
+            if(!confirm("Xác nhận hiển thị '" + productName + "'?")) return;
+            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'approve_product', role: userRole, name: productName }) }).then(res => res.json()).then(() => loadPendingList());
+        }
+
+        function deleteProduct(productName) {
+            if(!confirm("Xóa vĩnh viễn '" + productName + "'?")) return;
+            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'delete_product', role: userRole, name: productName }) }).then(res => res.json()).then(() => loadPendingList());
+        }
+
+        function logout() { localStorage.clear(); window.location.href = "login.html"; }
+    </script>
+</body>
+</html>
