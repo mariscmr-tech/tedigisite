@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ Hàng - TedigiVN</title>
+    
+    <script src="config.js"></script>
+
+    <style>
+        /* === CÀI ĐẶT CHUNG === */
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f4f7f6; color: #333; line-height: 1.6; }
+        
+        /* === KHỐI CỐ ĐỊNH (HEADER + MENU) === */
+        .sticky-wrapper { position: sticky; top: 0; z-index: 1001; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        header { background: #1a73e8; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .header-right { display: flex; align-items: center; gap: 10px; }
+        .btn { border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-login { background: white; color: #1a73e8; }
+        .btn-login:hover { background: #e8f0fe; }
+        .btn-admin { background: #ff9800; color: white; }
+        .btn-admin:hover { background: #e68a00; }
+        .btn-logout { background: #ff4d4d; color: white; }
+        .btn-logout:hover { background: #cc0000; }
+
+        .cart-btn { background: #ff9800; color: white; text-decoration: none; padding: 8px 15px; border-radius: 20px; font-weight: bold; display: flex; align-items: center; box-shadow: 0 0 10px rgba(255,152,0,0.5); }
+        .mobile-menu-btn { display: none; background: transparent; border: none; color: white; font-size: 26px; font-weight: bold; cursor: pointer; padding: 0 5px; margin-left: 5px; }
+
+        .main-menu { background: white; display: flex; align-items: center; padding: 0 20px; flex-wrap: wrap; }
+        .nav-link { color: #333; text-decoration: none; font-weight: bold; padding: 15px 20px; display: inline-block; border-bottom: 3px solid transparent; transition: 0.3s; }
+        .nav-link:hover { color: #1a73e8; border-bottom: 3px solid #1a73e8; background: #f9f9f9; }
+        .dropdown { position: relative; display: inline-block; }
+        .dropdown-content { display: none; position: absolute; background-color: white; min-width: 220px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.15); z-index: 1000; border-radius: 0 0 8px 8px; }
+        .dropdown-content a { color: #555; padding: 12px 16px; text-decoration: none; display: block; border-bottom: 1px solid #eee; }
+        .dropdown-content a:hover { background-color: #f4f7f6; color: #1a73e8; padding-left: 20px; }
+        @media (min-width: 769px) { .dropdown:hover .dropdown-content { display: block; } }
+
+        @media (max-width: 768px) {
+            header { padding: 10px 15px; } 
+            header h2 { font-size: 1.3em; margin: 0; }
+            .welcome-text { display: none; } 
+            .btn, .cart-btn { padding: 6px 10px; font-size: 12px; }
+            .header-right { gap: 5px; } 
+            .mobile-menu-btn { display: block; } 
+            .main-menu { display: none; position: absolute; top: 100%; left: 0; width: 100%; flex-direction: column; padding: 0; box-shadow: 0 5px 10px rgba(0,0,0,0.15); border-top: 1px solid #ddd; } 
+            .main-menu.active { display: flex; } 
+            .nav-link { width: 100%; box-sizing: border-box; border-bottom: 1px solid #eee; }
+            .dropdown { width: 100%; }
+            .dropdown-content { position: static; box-shadow: none; border-radius: 0; background-color: #f9f9f9; }
+            .dropdown-content a { padding-left: 30px; } 
+            .dropdown.open .dropdown-content { display: block; }
+        }
+
+        /* === CSS KHU VỰC GIỎ HÀNG === */
+        .container { width: 90%; max-width: 1200px; margin: 40px auto; min-height: 60vh; display: flex; gap: 30px; flex-wrap: wrap; align-items: flex-start; }
+        .page-title { width: 100%; border-bottom: 2px solid #1a73e8; padding-bottom: 10px; margin-bottom: 20px; color: #1a73e8; }
+        
+        /* Cột trái: Danh sách sản phẩm */
+        .cart-list { flex: 2; min-width: 300px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .cart-item { display: flex; align-items: center; padding: 15px 0; border-bottom: 1px solid #eee; gap: 15px; flex-wrap: wrap; }
+        .cart-img { width: 80px; height: 80px; object-fit: contain; border-radius: 4px; border: 1px solid #eee; }
+        .item-info { flex: 1; min-width: 200px; }
+        .item-name { font-weight: bold; font-size: 1.1em; color: #333; margin-bottom: 5px; }
+        .item-price { color: #e44d26; font-weight: bold; }
+        
+        .qty-controls { display: flex; align-items: center; border: 1px solid #ccc; border-radius: 4px; overflow: hidden; height: 35px; }
+        .qty-btn { background: #f8f9fa; border: none; width: 35px; font-size: 18px; cursor: pointer; font-weight: bold; }
+        .qty-btn:hover { background: #e9ecef; }
+        .qty-input { width: 40px; border: none; text-align: center; font-weight: bold; pointer-events: none; border-left: 1px solid #ccc; border-right: 1px solid #ccc; }
+        
+        .btn-remove { background: #ff4d4d; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-remove:hover { background: #cc0000; }
+        .empty-msg { text-align: center; padding: 40px; color: #888; font-size: 1.1em; width: 100%; }
+
+        /* Cột phải: Form thanh toán */
+        .checkout-box { flex: 1; min-width: 300px; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 90px; }
+        .checkout-box h3 { margin-top: 0; color: #333; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .total-row { display: flex; justify-content: space-between; font-size: 1.2em; margin-bottom: 20px; }
+        .total-price { color: #e44d26; font-weight: bold; font-size: 1.5em; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.9em; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-family: inherit; }
+        
+        .btn-order { background: #28a745; color: white; border: none; padding: 15px; width: 100%; border-radius: 4px; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-order:hover { background: #218838; }
+
+        footer { background: #333; color: white; text-align: center; padding: 20px; margin-top: 50px; font-size: 0.9em; width: 100%; }
+        
+        /* Modal Thông báo thành công */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
+        .modal-content { background-color: #fff; padding: 30px; border-radius: 12px; text-align: center; max-width: 400px; width: 90%; animation: pop 0.3s ease; }
+        @keyframes pop { from {transform: scale(0.8); opacity: 0;} to {transform: scale(1); opacity: 1;} }
+        .modal h2 { color: #28a745; margin-top: 0; }
+        .btn-home { background: #1a73e8; color: white; text-decoration: none; padding: 10px 20px; border-radius: 4px; display: inline-block; margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="sticky-wrapper">
+        <header>
+            <h2 style="margin: 0; letter-spacing: 1px;"><a href="index.html" style="color: white; text-decoration: none;">TedigiVN</a></h2>
+            <div class="header-right">
+                <div id="user-menu" style="display: flex; align-items: center; gap: 5px;"></div>
+                <a href="cart.html" class="cart-btn">🛒 <span id="cart-count" style="margin-left: 5px;">0</span></a>
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+            </div>
+        </header>
+
+        <nav class="main-menu" id="navMenu">
+            <a href="index.html" class="nav-link">Giới thiệu</a>
+            <div class="dropdown" id="productDropdown">
+                <a href="javascript:void(0)" class="nav-link" onclick="toggleDropdown()">Sản phẩm ▼</a>
+                <div class="dropdown-content">
+                    <a href="products.html?cat=pos">Máy POS bán hàng</a>
+                    <a href="products.html?cat=bill">Máy in bill</a>
+                    <a href="products.html?cat=scan">Máy quét mã vạch</a>
+                    <a href="products.html?cat=print">Máy in công nghiệp</a>
+                    <a href="products.html?cat=all">Tất cả sản phẩm</a>
+                </div>
+            </div>
+            <a href="#" class="nav-link">Dịch vụ & Bảo hành</a>
+            <a href="index.html#news-section" class="nav-link">Tin tức</a>
+            <a href="#" class="nav-link active">Liên hệ</a>
+        </nav>
+    </div>
+
+    <div class="container">
+        <h2 class="page-title">🛒 Giỏ Hàng Của Bạn</h2>
+        
+        <div class="cart-list" id="cartItemsContainer">
+            </div>
+
+        <div class="checkout-box" id="checkoutSection">
+            <h3>Thông tin thanh toán</h3>
+            <div class="total-row">
+                <span>Tổng cộng:</span>
+                <span class="total-price" id="totalAmountDisplay">0 đ</span>
+            </div>
+            
+            <form id="orderForm">
+                <div class="form-group">
+                    <label>Họ và Tên người nhận *</label>
+                    <input type="text" id="cName" required placeholder="Nhập họ tên...">
+                </div>
+                <div class="form-group">
+                    <label>Số điện thoại liên hệ *</label>
+                    <input type="tel" id="cPhone" required placeholder="09xxxx..." pattern="[0-9]{10,11}">
+                </div>
+                <div class="form-group">
+                    <label>Địa chỉ giao hàng *</label>
+                    <textarea id="cAddress" required rows="3" placeholder="Số nhà, Phường/Xã, Quận/Huyện, Tỉnh/TP"></textarea>
+                </div>
+                <button type="submit" class="btn-order" id="submitOrderBtn">XÁC NHẬN ĐẶT HÀNG</button>
+                <p id="orderStatus" style="text-align: center; margin-top: 10px; font-weight: bold;"></p>
+            </form>
+        </div>
+    </div>
+
+    <footer><p>© 2024 TedigiVN. Bản quyền thuộc về Công ty TNHH Công nghệ Tedigi Việt Nam.</p></footer>
+
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <h2>🎉 Đặt hàng thành công!</h2>
+            <p>Cảm ơn bạn đã tin tưởng TedigiVN.</p>
+            <p>Mã đơn hàng của bạn là: <b id="orderCodeDisplay" style="color: #e44d26;"></b></p>
+            <p style="font-size: 0.9em; color: #666;">Nhân viên của chúng tôi sẽ gọi điện xác nhận trong thời gian sớm nhất.</p>
+            <a href="products.html?cat=all" class="btn-home">Tiếp tục mua sắm</a>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. HEADER & MENU ---
+        const userMenu = document.getElementById('user-menu');
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        
+        // Lấy Tên hiển thị. Nếu chưa có, để mặc định là "Nhân viên" (Tuyệt đối không gọi currentUser ra đây)
+        const displayName = localStorage.getItem('displayName') || 'Nhân viên';
+
+        if (isLoggedIn === "true") {
+            userMenu.innerHTML = `
+                <span class="welcome-text" style="font-size: 14px; margin-right: 10px;">👤 <b>${displayName}</b></span>
+                <button class="btn btn-admin" onclick="window.location.href='admin.html'">⚙️ Quản Trị</button>
+                <button class="btn btn-logout" onclick="logout()">🚪 Thoát</button>
+            `;
+        } else {
+            userMenu.innerHTML = `<button class="btn btn-login" onclick="window.location.href='login.html'">Đăng nhập</button>`;
+        }
+
+        function logout() { localStorage.clear(); window.location.reload(); }
+        function toggleMobileMenu() { document.getElementById('navMenu').classList.toggle('active'); }
+        function toggleDropdown() {
+            if (window.innerWidth <= 768) document.getElementById('productDropdown').classList.toggle('open');
+            else window.location.href = "products.html?cat=all";
+        }
+
+        // --- 2. QUẢN LÝ VÀ HIỂN THỊ GIỎ HÀNG ---
+        let cart = JSON.parse(localStorage.getItem('tedigi_cart')) || [];
+        
+        // Fix lỗi ảnh rác từ lịch sử: Ép tất cả ảnh về dummyimage nếu đang chứa via.placeholder
+        cart.forEach(item => {
+            if (item.image && item.image.includes('via.placeholder.com')) {
+                item.image = "https://dummyimage.com/300x200/cccccc/ffffff&text=Lỗi+ảnh+cũ";
+            }
+        });
+        localStorage.setItem('tedigi_cart', JSON.stringify(cart)); // Lưu lại cho sạch
+
+        let totalAmount = 0;
+
+        function renderCart() {
+            const container = document.getElementById('cartItemsContainer');
+            const countEl = document.getElementById('cart-count');
+            
+            let totalQty = 0;
+            totalAmount = 0;
+            container.innerHTML = "";
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-msg">
+                        <div style="font-size: 3em; margin-bottom: 10px;">🛒</div>
+                        Giỏ hàng của bạn đang trống.<br>
+                        <a href="products.html?cat=all" style="color: #1a73e8; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 15px;">Đi mua sắm ngay →</a>
+                    </div>`;
+                document.getElementById('checkoutSection').style.display = 'none'; // Ẩn form nếu giỏ rỗng
+                countEl.innerText = 0;
+                return;
+            }
+
+            document.getElementById('checkoutSection').style.display = 'block';
+
+            cart.forEach((item, index) => {
+                totalQty += item.quantity;
+                let itemTotal = item.price * item.quantity;
+                totalAmount += itemTotal;
+
+                container.innerHTML += `
+                    <div class="cart-item">
+                        <img src="${item.image}" class="cart-img" onerror="this.src='https://dummyimage.com/80/ff4d4d/ffffff&text=Lỗi'">
+                        <div class="item-info">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-price">${parseInt(item.price).toLocaleString('vi-VN')} đ</div>
+                        </div>
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty(${index}, -1)">-</button>
+                            <input type="text" class="qty-input" value="${item.quantity}" readonly>
+                            <button class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
+                        </div>
+                        <button class="btn-remove" onclick="removeItem(${index})">Xóa</button>
+                    </div>
+                `;
+            });
+
+            countEl.innerText = totalQty;
+            document.getElementById('totalAmountDisplay').innerText = parseInt(totalAmount).toLocaleString('vi-VN') + " đ";
+        }
+
+        function changeQty(index, change) {
+            cart[index].quantity += change;
+            if (cart[index].quantity <= 0) {
+                if(confirm("Bạn muốn xóa sản phẩm này khỏi giỏ?")) cart.splice(index, 1);
+                else cart[index].quantity = 1;
+            }
+            localStorage.setItem('tedigi_cart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            localStorage.setItem('tedigi_cart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        // Khởi chạy hiển thị lần đầu
+        renderCart();
+
+        // --- 3. GỬI ĐƠN ĐẶT HÀNG ---
+        document.getElementById('orderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitOrderBtn');
+            const statusMsg = document.getElementById('orderStatus');
+            
+            if (cart.length === 0) { alert("Giỏ hàng trống!"); return; }
+
+            btn.disabled = true; btn.innerText = "ĐANG XỬ LÝ..."; statusMsg.innerText = "";
+
+            const payload = {
+                action: 'place_order',
+                customerName: document.getElementById('cName').value.trim(),
+                phone: document.getElementById('cPhone').value.trim(),
+                address: document.getElementById('cAddress').value.trim(),
+                cart: cart,
+                totalAmount: totalAmount
+            };
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "success") {
+                    // Xóa giỏ hàng
+                    localStorage.removeItem('tedigi_cart');
+                    cart = [];
+                    renderCart();
+                    
+                    // Hiện Pop-up chúc mừng và hiển thị mã đơn
+                    document.getElementById('orderCodeDisplay').innerText = data.message.replace("Mã đơn: ", "");
+                    document.getElementById('successModal').style.display = 'flex';
+                } else {
+                    statusMsg.innerText = "Lỗi hệ thống: " + data.message; statusMsg.style.color = "red";
+                }
+            })
+            .catch(error => {
+                console.error("Lỗi:", error);
+                statusMsg.innerText = "Lỗi kết nối mạng! Vui lòng thử lại."; statusMsg.style.color = "red";
+            })
+            .finally(() => { 
+                btn.disabled = false; btn.innerText = "XÁC NHẬN ĐẶT HÀNG"; 
+            });
+        });
+    </script>
+</body>
+</html>
