@@ -4,60 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hệ Thống Quản Trị - TedigiVN</title>
-    <script src="config.js"></script>
-    <script>if (localStorage.getItem('isLoggedIn') !== "true") window.location.href = "login.html";</script>
-    <style>
-        /* CSS Rút Gọn Giữ Nguyên Layout Chuyên Nghiệp */
-        body { font-family: 'Segoe UI', Arial; background: #f0f2f5; margin: 0; }
-        header { background: #333; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-logout { background: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; }
-        .container { width: 90%; max-width: 1100px; margin: 30px auto; }
-        .card { background: white; padding: 25px; border-radius: 0 8px 8px 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 25px; }
-        h2 { margin-top: 0; color: #1a73e8; border-bottom: 2px solid #f0f2f5; padding-bottom: 10px; }
-        
-        .tab-menu { display: flex; gap: 5px; margin-bottom: 0; flex-wrap: wrap; }
-        .tab-btn { background: #e9ecef; border: none; padding: 12px 25px; font-size: 15px; font-weight: bold; color: #555; cursor: pointer; border-radius: 8px 8px 0 0; transition: 0.3s; flex-grow: 1; text-align: center; display: none; }
-        .tab-btn.active { background: white; color: #1a73e8; border-top: 3px solid #1a73e8; display: block; }
-        .tab-content { display: none; } .tab-content.active { display: block; }
-
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .form-group { margin-bottom: 15px; } .form-group.full-width { grid-column: 1 / -1; }
-        .form-group label { display: block; font-weight: bold; margin-bottom: 5px; color: #444; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        .btn-submit { background: #28a745; color: white; border: none; padding: 15px 20px; font-size: 16px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
-        .btn-cancel-edit { background: #6c757d; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; display: none; }
-        
-        .filter-bar { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #e9ecef; }
-        .filter-bar input { flex: 2; min-width: 200px; padding: 10px; } .filter-bar select { flex: 1; min-width: 150px; padding: 10px; }
-
-        .pending-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 15px; border: 1px solid #eee; border-radius: 6px; margin-bottom: 15px; background: #fff; gap: 15px; flex-wrap: wrap;}
-        .pending-item:hover { border-color: #1a73e8; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-        .btn-approve { background: #28a745; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; }
-        .btn-edit { background: #ffc107; color: #333; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; }
-        .btn-reject { background: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; }
-        
-        .badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; color: white; margin-left: 5px; display: inline-block; margin-bottom: 5px; }
-        .bg-pending { background: #ff9800; } .bg-approved { background: #17a2b8; } .bg-success { background: #28a745; } .bg-stop, .bg-fail { background: #dc3545; } .bg-outstock { background: #6c757d; } 
-        
-        .thumb-img { width: 80px; height: 80px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; margin-right: 15px; }
-        .item-info { display: flex; align-items: center; flex: 1; min-width: 300px; }
-        .order-details-box { background: #f8f9fa; padding: 10px; border-radius: 4px; border-left: 3px solid #1a73e8; font-family: monospace; font-size: 14px; white-space: pre-wrap; width: 100%; margin-top: 10px; box-sizing: border-box; }
-        .reason-box { color: #dc3545; background: #ffe6e6; padding: 8px 12px; border-radius: 4px; margin-top: 10px; font-size: 13px; border-left: 3px solid #dc3545; width: 100%; box-sizing: border-box; }
-        @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } header { flex-direction: column; gap: 10px; } }
-    </style>
+    
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/admin.css">
+    
+    <script src="js/config.js"></script>
+    
+    <script>
+        if (localStorage.getItem('isLoggedIn') !== "true") {
+            window.location.href = "login.html";
+        }
+    </script>
 </head>
 <body>
 
-    <header>
-        <h3 style="margin: 0;">TedigiVN Dashboard</h3>
-        <div>
-            <span style="margin-right: 15px; font-size: 14px;">👤 <b id="display-name-header">User</b></span>
-            <button class="btn-logout" onclick="logout()">Đăng xuất</button>
-            <button onclick="window.location.href='index.html'" style="margin-left:5px; padding: 8px; background: white; color: #333; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">Xem Web</button>
-        </div>
-    </header>
+    <div id="header-placeholder"></div>
 
-    <div class="container">
+    <div class="container" style="margin-top: 20px;">
+        <div class="admin-welcome-bar" style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <div style="font-size: 16px;">👤 Chào mừng, <b id="display-name-header" style="color: var(--primary-blue);">User</b></div>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="window.location.href='index.html'" style="padding: 8px 15px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s;">Xem Website</button>
+                <button class="btn-logout" onclick="logout()" style="background: #D61A3C; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s;">Đăng xuất</button>
+            </div>
+        </div>
+
         <div class="tab-menu" id="adminTabs">
             <button class="tab-btn" onclick="switchTab('add-tab')" id="btn-add-tab">➕ Nhập SP Mới</button>
             <button class="tab-btn" onclick="switchTab('manage-tab')" id="btn-manage-tab">📦 Quản Lý Kho</button>
@@ -72,196 +43,91 @@
                     <div class="form-group"><label>Mã máy (SKU)</label><input type="text" id="pCode"></div>
                     <div class="form-group"><label>Giá bán (VNĐ) *</label><input type="number" id="pPrice" required></div>
                     <div class="form-group"><label>Số lượng tồn kho</label><input type="number" id="pStock" value="0" min="0"></div>
-                    <div class="form-group"><label>Danh mục *</label><select id="pCategory"><option value="Máy POS bán hàng">Máy POS</option><option value="Máy in bill">Máy in bill</option><option value="Máy quét mã vạch">Máy quét</option></select></div>
-                    <div class="form-group"><label>Trạng thái</label><select id="pBizStatus"><option value="Đang kinh doanh">✅ Đang KD</option><option value="Ngừng kinh doanh">❌ Ngừng KD</option></select></div>
-                    <div class="form-group full-width"><label>Link ảnh *</label><input type="url" id="pImage" required></div>
-                    <div class="form-group full-width"><label>Mô tả ngắn</label><textarea id="pDesc" rows="2"></textarea></div>
-                    <div class="form-group full-width"><label>Thông số kỹ thuật</label><textarea id="pSpecs" rows="2"></textarea></div>
+                    <div class="form-group">
+                        <label>Danh mục *</label>
+                        <select id="pCategory">
+                            <option value="Máy POS bán hàng">Máy POS bán hàng</option>
+                            <option value="Máy in bill">Máy in hóa đơn</option>
+                            <option value="Máy quét mã vạch">Máy quét mã vạch</option>
+                            <option value="Máy in công nghiệp">Máy in công nghiệp</option>
+                            <option value="Ngăn kéo đựng tiền">Ngăn kéo đựng tiền</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Trạng thái kinh doanh</label>
+                        <select id="pBizStatus">
+                            <option value="Đang kinh doanh">✅ Đang KD</option>
+                            <option value="Ngừng kinh doanh">❌ Ngừng KD</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label>Hình ảnh sản phẩm (Link URL) *</label>
+                        <div id="image-container">
+                            <div class="dynamic-input-row">
+                                <input type="url" class="pImageInput" placeholder="Nhập link ảnh..." required>
+                                <button type="button" class="btn-remove-row" onclick="this.parentElement.remove()">❌</button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-add-row" onclick="addImageRow()" style="margin-top: 10px;">+ Thêm ảnh khác</button>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Thông số kỹ thuật</label>
+                        <div id="specs-container">
+                            <div class="dynamic-input-row">
+                                <input type="text" class="pSpecName" placeholder="Tên thông số (VD: CPU)">
+                                <input type="text" class="pSpecValue" placeholder="Giá trị (VD: Intel Core i5)">
+                                <button type="button" class="btn-remove-row" onclick="this.parentElement.remove()">❌</button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-add-row" onclick="addSpecRow()" style="margin-top: 10px;">+ Thêm dòng thông số</button>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label>Mô tả ngắn</label>
+                        <textarea id="pDesc" rows="3" placeholder="Nhập mô tả tóm tắt..."></textarea>
+                    </div>
                 </div>
-                <button type="submit" class="btn-submit" id="addBtn">Gửi Yêu Cầu Nhập Hàng</button>
-                <button type="button" class="btn-cancel-edit" id="cancelEditBtn" onclick="cancelEdit()">Hủy chỉnh sửa</button>
+                
+                <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;">
+                    <button type="submit" class="btn-submit" id="addBtn" style="background: var(--primary-blue); color: white; border: none; padding: 12px 30px; border-radius: 4px; cursor: pointer; font-weight: bold;">Lưu Sản Phẩm</button>
+                    <button type="button" class="btn-cancel-edit" id="cancelEditBtn" onclick="cancelEdit()" style="display:none; background: #95a5a6; color: white; border: none; padding: 12px 30px; border-radius: 4px; cursor: pointer;">Hủy Chỉnh Sửa</button>
+                </div>
                 <p id="addStatus" style="text-align: center; font-weight: bold; margin-top: 15px;"></p>
             </form>
         </div>
 
         <div class="card tab-content" id="manage-tab">
-            <h2 style="display: flex; justify-content: space-between;">Quản Lý Kho <span class="badge bg-approved" id="product-count">0</span></h2>
-            <div class="filter-bar"><input type="text" id="searchProductInput" placeholder="🔍 Tên hoặc Mã máy..." onkeyup="filterProducts()"></div>
-            <div id="product-list"><p style="text-align: center;">Đang tải...</p></div>
+            <h2 style="display: flex; justify-content: space-between; align-items: center;">
+                Quản Lý Kho Hàng 
+                <span class="badge bg-approved" id="product-count" style="background: var(--primary-blue); padding: 5px 15px; border-radius: 20px; font-size: 14px;">0</span>
+            </h2>
+            <div class="filter-bar" style="margin-bottom: 20px;">
+                <input type="text" id="searchProductInput" placeholder="🔍 Tìm nhanh theo tên hoặc mã máy..." onkeyup="filterProducts()" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+            <div id="product-list">
+                <p style="text-align: center; color: #666;">⏳ Đang tải dữ liệu sản phẩm...</p>
+            </div>
         </div>
 
         <div class="card tab-content" id="order-tab">
-            <h2 style="display: flex; justify-content: space-between;">Xử Lý Đơn Hàng <span class="badge bg-success" id="order-count">0</span></h2>
-            <div class="filter-bar"><input type="text" id="searchOrderInput" placeholder="🔍 SĐT, Mã đơn..." onkeyup="filterOrders()"></div>
-            <div id="order-list"><p style="text-align: center;">Đang tải dữ liệu...</p></div>
+            <h2 style="display: flex; justify-content: space-between; align-items: center;">
+                Danh Sách Đơn Hàng 
+                <span class="badge bg-success" id="order-count" style="background: var(--primary-red); padding: 5px 15px; border-radius: 20px; font-size: 14px;">0</span>
+            </h2>
+            <div class="filter-bar" style="margin-bottom: 20px;">
+                <input type="text" id="searchOrderInput" placeholder="🔍 Tìm đơn theo SĐT hoặc mã đơn..." onkeyup="filterOrders()" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+            <div id="order-list">
+                <p style="text-align: center; color: #666;">⏳ Đang đồng bộ đơn hàng...</p>
+            </div>
         </div>
     </div>
 
-    <script>
-        const currentUser = localStorage.getItem('currentUser');
-        const userRole = localStorage.getItem('userRole'); // admin | warehouse | sale | shipper
-        
-        // Render Tên hiển thị và Chức vụ
-        const roleNames = { 'admin': 'Admin', 'warehouse': 'Thủ Kho', 'sale': 'NV Bán Hàng', 'shipper': 'Shipper' };
-        const displayName = localStorage.getItem('displayName') || roleNames[userRole];
-        document.getElementById('display-name-header').innerText = `${displayName} (${roleNames[userRole]})`;
+    <div id="footer-placeholder"></div>
 
-        let isEditing = false; let oldEditName = "";
-        let allProductsData = []; let allOrdersData = [];
-
-        // PHÂN QUYỀN HIỂN THỊ TABS
-        if (userRole === 'admin') {
-            document.getElementById('btn-add-tab').style.display = 'block';
-            document.getElementById('btn-manage-tab').style.display = 'block';
-            document.getElementById('btn-order-tab').style.display = 'block';
-            document.getElementById('addBtn').innerText = "Lưu Trực Tiếp Lên Kho";
-            switchTab('manage-tab'); loadAllProducts(); loadAllOrders();
-        } else if (userRole === 'warehouse') {
-            document.getElementById('btn-add-tab').style.display = 'block';
-            document.getElementById('btn-manage-tab').style.display = 'block';
-            document.getElementById('addBtn').innerText = "Gửi Yêu Cầu Nhập (Chờ Duyệt)";
-            switchTab('manage-tab'); loadAllProducts();
-        } else if (userRole === 'sale' || userRole === 'shipper') {
-            document.getElementById('btn-order-tab').style.display = 'block';
-            switchTab('order-tab'); loadAllOrders();
-        }
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            document.getElementById('btn-' + tabId).classList.add('active');
-        }
-
-        // === QUẢN LÝ SẢN PHẨM ===
-        document.getElementById('addForm').addEventListener('submit', function(e) {
-            e.preventDefault(); const btn = document.getElementById('addBtn'); btn.disabled = true; 
-            const payload = {
-                action: isEditing ? 'edit_product' : 'add_product', role: userRole, username: currentUser,
-                name: document.getElementById('pName').value.trim(), price: document.getElementById('pPrice').value, 
-                category: document.getElementById('pCategory').value, image: document.getElementById('pImage').value,
-                code: document.getElementById('pCode').value, desc: document.getElementById('pDesc').value,
-                specs: document.getElementById('pSpecs').value, bizStatus: document.getElementById('pBizStatus').value,
-                stock: document.getElementById('pStock').value
-            };
-            if(isEditing) { payload.oldName = oldEditName; payload.newName = payload.name; }
-            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
-            .then(res => res.json()).then(data => {
-                alert(data.message);
-                if (data.status === "success") { cancelEdit(); switchTab('manage-tab'); loadAllProducts(); }
-            }).finally(() => { btn.disabled = false; });
-        });
-
-        function loadAllProducts() { fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_all_products', role: userRole }) }).then(res => res.json()).then(data => { allProductsData = data; filterProducts(); }); }
-        function filterProducts() {
-            const searchTerm = document.getElementById('searchProductInput').value.toLowerCase();
-            renderProductList(allProductsData.filter(item => String(item.name).toLowerCase().includes(searchTerm) || String(item.code).toLowerCase().includes(searchTerm)));
-        }
-        function renderProductList(data) {
-            const listEl = document.getElementById('product-list'); document.getElementById('product-count').innerText = data.length;
-            if (data.length === 0) { listEl.innerHTML = "<p style='text-align:center;'>Không có dữ liệu.</p>"; return; }
-            listEl.innerHTML = "";
-            data.forEach(item => {
-                let badges = item.status === 'pending' ? `<span class="badge bg-pending">Chờ duyệt</span>` : `<span class="badge bg-approved">Đã duyệt</span>`;
-                if (item.bizStatus === 'Ngừng kinh doanh') badges += `<span class="badge bg-stop">Ngừng KD</span>`;
-                if (item.stock <= 0) badges += `<span class="badge bg-outstock">Hết hàng</span>`;
-                
-                // Admin duyệt. Warehouse và Admin đều sửa được. Chỉ Admin được xóa.
-                const approveBtn = (userRole === 'admin' && item.status === 'pending') ? `<button class="btn-approve" onclick="approveProduct('${item.name}')">✔️ Duyệt</button>` : '';
-                const deleteBtn = (userRole === 'admin') ? `<button class="btn-reject" onclick="deleteProduct('${item.name}')">❌ Xóa</button>` : '';
-                const editArgs = `startEdit('${item.name}', '${item.price}', '${item.category}', '${item.image}', '${item.code||""}', \`${item.desc||""}\`, \`${item.specs||""}\`, '${item.bizStatus}', '${item.stock}')`;
-
-                listEl.innerHTML += `
-                    <div class="pending-item">
-                        <div class="item-info"><img src="${item.image}" class="thumb-img" onerror="this.src='https://dummyimage.com/80/ccc/fff&text=Lõi'">
-                            <div><b style="color:#1a73e8;">${item.name}</b> ${badges}<br><span style="font-size: 13px; color: #555;">Mã: <b>${item.code||'N/A'}</b> | Tồn kho: <b>${item.stock||0}</b></span></div></div>
-                        <div style="display:flex; flex-direction: column; gap:5px;">${approveBtn}<button class="btn-edit" onclick="${editArgs}">✏️ Sửa</button>${deleteBtn}</div>
-                    </div>`;
-            });
-        }
-        function startEdit(name, price, category, image, code, desc, specs, bizStatus, stock) {
-            isEditing = true; oldEditName = name.trim(); document.getElementById('pName').value = name.trim(); document.getElementById('pPrice').value = price; document.getElementById('pImage').value = image; document.getElementById('pCode').value = code; document.getElementById('pDesc').value = desc; document.getElementById('pSpecs').value = specs; document.getElementById('pStock').value = stock; document.getElementById('pBizStatus').value = bizStatus;
-            document.getElementById('addBtn').innerText = "Cập Nhật Dữ Liệu"; document.getElementById('cancelEditBtn').style.display = "block"; switchTab('add-tab');
-        }
-        function cancelEdit() { isEditing = false; document.getElementById('addForm').reset(); document.getElementById('addBtn').innerText = userRole==='admin' ? "Lưu Trực Tiếp Lên Kho" : "Gửi Yêu Cầu Nhập"; document.getElementById('cancelEditBtn').style.display = "none"; switchTab('manage-tab'); }
-        function approveProduct(pName) { fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'approve_product', role: userRole, name: pName }) }).then(res=>res.json()).then(()=>loadAllProducts()); }
-        function deleteProduct(pName) { if(confirm("Xóa vĩnh viễn?")) fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'delete_product', role: userRole, name: pName }) }).then(res=>res.json()).then(()=>loadAllProducts()); }
-
-        // === QUẢN LÝ ĐƠN HÀNG ===
-        function loadAllOrders() { fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_all_orders', role: userRole }) }).then(res => res.json()).then(data => { allOrdersData = data; filterOrders(); }); }
-        function filterOrders() {
-            const searchTerm = document.getElementById('searchOrderInput').value.toLowerCase();
-            renderOrdersList(allOrdersData.filter(item => String(item.orderId).toLowerCase().includes(searchTerm) || String(item.phone).includes(searchTerm)));
-        }
-
-        function renderOrdersList(data) {
-            const listEl = document.getElementById('order-list'); document.getElementById('order-count').innerText = data.length;
-            if (data.length === 0) { listEl.innerHTML = "<p style='text-align:center;'>Không có đơn hàng nào.</p>"; return; }
-            listEl.innerHTML = "";
-
-            data.forEach(item => {
-                let badgeClass = "bg-pending";
-                if (item.status === 'Đang giao') badgeClass = "bg-approved";
-                if (item.status === 'Đã hoàn thành') badgeClass = "bg-success";
-                if (item.status === 'Đã hủy' || item.status === 'Giao thất bại') badgeClass = "bg-stop";
-
-                // PHÂN QUYỀN TRẠNG THÁI DROP-DOWN
-                let statusOptions = "";
-                if (userRole === 'admin') {
-                    statusOptions = `<option value="Chờ xử lý">⏳ Chờ xử lý</option><option value="Đang giao">🚚 Đang giao</option><option value="Đã hoàn thành">✅ Đã hoàn thành</option><option value="Yêu cầu hủy">⚠️ Yêu cầu hủy</option><option value="Đã hủy">❌ Đã hủy (Hoàn kho)</option><option value="Giao thất bại">🚨 Giao thất bại</option>`;
-                } else if (userRole === 'sale') {
-                    // NV Sale: Xác nhận giao hàng, Yêu cầu hủy, Duyệt hủy
-                    statusOptions = `<option value="Chờ xử lý">⏳ Chờ xử lý</option><option value="Đang giao">🚚 Đang giao (Xác nhận)</option><option value="Yêu cầu hủy">⚠️ Yêu cầu hủy</option><option value="Đã hủy">❌ Duyệt Hủy (Hoàn kho)</option>`;
-                } else if (userRole === 'shipper') {
-                    // NV Giao hàng: Giao thành công / Thất bại
-                    statusOptions = `<option value="Đang giao">🚚 Đang giao</option><option value="Đã hoàn thành">✅ Giao Thành Công</option><option value="Giao thất bại">🚨 Giao thất bại (Hoàn kho)</option>`;
-                }
-
-                let reasonHtml = item.cancelReason ? `<div class="reason-box"><b>LÝ DO GHI CHÚ:</b> ${item.cancelReason}</div>` : "";
-
-                listEl.innerHTML += `
-                    <div class="pending-item">
-                        <div class="item-info" style="flex-direction: column; align-items: flex-start;">
-                            <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #eee; padding-bottom: 10px; margin-bottom: 10px;">
-                                <div><b style="color:#1a73e8; font-size: 1.2em;">${item.orderId}</b> <span class="badge ${badgeClass}">${item.status}</span></div>
-                                <span style="font-size: 0.9em; color: #888;">🕒 ${item.date}</span>
-                            </div>
-                            <span style="font-size: 14px; color: #444; line-height: 1.8;">👤 <b>${item.customerName}</b> - 📞 <b>${item.phone}</b><br>📍 ${item.address}</span>
-                            <div class="order-details-box">${item.details}</div>${reasonHtml}
-                            <div style="font-size: 1.2em; margin-top: 10px; font-weight: bold;">Tổng thu: <span style="color:#e44d26;">${parseInt(item.total).toLocaleString()} đ</span></div>
-                        </div>
-                        
-                        <div style="display:flex; flex-direction: column; gap:10px; min-width: 160px; background: #f8f9fa; padding: 15px; border-radius: 6px; border: 1px solid #ddd;">
-                            <label style="font-size: 12px; font-weight: bold; color: #666; text-align: center;">CẬP NHẬT TRẠNG THÁI</label>
-                            <select id="status-${item.orderId}" style="padding: 8px; border-radius: 4px;">
-                                <option value="${item.status}" selected disabled>-- Trạng thái hiện tại --</option>
-                                ${statusOptions}
-                            </select>
-                            <button class="btn-approve" onclick="updateOrderStatus('${item.orderId}')" style="width:100%;">💾 Lưu trạng thái</button>
-                        </div>
-                    </div>`;
-            });
-        }
-
-        function updateOrderStatus(orderId) {
-            const newStatus = document.getElementById('status-' + orderId).value;
-            let cancelReason = "";
-
-            if (newStatus === 'Giao thất bại') {
-                cancelReason = prompt("BẮT BUỘC: Vui lòng ghi rõ lý do GIAO THẤT BẠI (Khách không nghe máy, boom hàng...):");
-            } else if (newStatus === 'Yêu cầu hủy') {
-                cancelReason = prompt("Vui lòng ghi lý do YÊU CẦU HỦY để chờ duyệt:");
-            }
-
-            if ((newStatus === 'Giao thất bại' || newStatus === 'Yêu cầu hủy') && (!cancelReason || cancelReason.trim() === "")) {
-                alert("❌ Bạn phải điền lý do mới được đổi trạng thái này!");
-                loadAllOrders(); return;
-            }
-
-            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'update_order_status', role: userRole, orderId: orderId, newStatus: newStatus, cancelReason: cancelReason }) })
-            .then(res => res.json()).then(data => { alert(data.message); loadAllOrders(); });
-        }
-        function logout() { localStorage.clear(); window.location.href = "login.html"; }
-    </script>
+    <script src="js/main.js"></script>
+    <script src="js/admin.js"></script>
 </body>
 </html>

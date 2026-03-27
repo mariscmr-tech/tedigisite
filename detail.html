@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi Tiết Sản Phẩm - TedigiVN</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/detail.css">
+    <script src="js/config.js"></script>
+    <style>
+        /* CSS nội khối để tối ưu màu sắc theo thương hiệu ngay tại trang này */
+        :root {
+            --logo-blue: #1E5BB1;
+            --logo-red: #D61A3C;
+        }
+        .logo img {
+            height: 50px;
+            width: auto;
+        }
+        .search-bar button {
+            background-color: var(--logo-blue) !important;
+        }
+        .cart-count {
+            background: var(--logo-red);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sticky-wrapper">
+        <div class="top-bar">
+            <div class="top-bar-container">
+                <div class="top-bar-left">
+                    <span>📧 Email: contact@tedigi.vn</span>
+                    <span>📍 123 Đường ABC, TP.HCM</span>
+                </div>
+                <div class="top-bar-right">
+                    <span>Hỗ trợ kỹ thuật 24/7</span>
+                    <span>Chính sách bảo hành</span>
+                </div>
+            </div>
+        </div>
+
+        <header class="main-header">
+            <div class="header-container">
+                <div class="logo">
+                    <a href="index.html">
+                        <img src="images/logo.png" alt="TedigiVN Logo">
+                    </a>
+                </div>
+
+                <div class="search-bar">
+                    <input type="text" id="globalSearchInput" placeholder="Tìm kiếm máy POS, máy in, máy quét...">
+                    <button onclick="window.location.href='products.html'">🔍 Tìm</button>
+                </div>
+
+                <div class="header-actions">
+                    <div id="user-menu"></div>
+                    <a href="cart.html" class="cart-btn">
+                        <span class="cart-icon">🛒</span>
+                        <span class="cart-text">Giỏ hàng</span>
+                        <span id="cart-count" class="cart-count">0</span>
+                    </a>
+                    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+                </div>
+            </div>
+        </header>
+
+        <nav class="main-nav" id="navMenu">
+            <div class="nav-container">
+                <div class="dropdown" id="productDropdown">
+                    <a href="javascript:void(0)" class="nav-link category-btn" onclick="toggleDropdown()">☰ DANH MỤC SẢN PHẨM</a>
+                    <div class="dropdown-content">
+                        <a href="products.html?cat=pos">🖥️ Máy POS bán hàng</a>
+                        <a href="products.html?cat=bill">🧾 Máy in hóa đơn</a>
+                        <a href="products.html?cat=scan">🔦 Máy quét mã vạch</a>
+                        <a href="products.html?cat=print">🖨️ Máy in công nghiệp</a>
+                        <a href="products.html?cat=cashdrawer">💵 Ngăn kéo đựng tiền</a>
+                    </div>
+                </div>
+                <a href="index.html" class="nav-link">Trang Chủ</a>
+                <a href="products.html?cat=all" class="nav-link">Tất Cả Sản Phẩm</a>
+                <a href="#" class="nav-link">Khuyến Mãi 🔥</a>
+                <a href="#" class="nav-link">Dịch Vụ & Bảo Hành</a>
+                <a href="#" class="nav-link">Liên Hệ</a>
+            </div>
+        </nav>
+    </div>
+
+    <div id="product-detail-wrapper">
+        <div style="text-align: center; padding: 100px; font-size: 18px; color: #666;">
+            ⏳ Đang tải thông tin sản phẩm...
+        </div>
+    </div>
+
+    <footer class="main-footer" style="background-color: #2c3e50; color: white; padding: 50px 0 20px 0; margin-top: 50px;">
+        <div class="footer-container" style="width: 90%; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+            <div class="footer-col">
+                <div style="background: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                    <img src="images/logo.png" alt="TedigiVN Footer Logo" style="height: 40px; width: auto; display: block;">
+                </div>
+                <h3 style="color: white; margin: 0 0 10px 0;">TEDIGI<span style="color: #D61A3C;">VN</span></h3>
+                <p style="font-size: 14px; line-height: 1.6; opacity: 0.8;">Chuyên cung cấp giải pháp phần cứng bán hàng toàn diện, bền bỉ và chuyên nghiệp.</p>
+                <p style="font-size: 14px; opacity: 0.8;">📍 123 Đường ABC, Quận X, TP.HCM</p>
+                <p style="font-size: 14px; opacity: 0.8;">📞 Hotline: 1900 xxxx</p>
+            </div>
+            <div class="footer-col">
+                <h4 style="color: white; margin-bottom: 15px; border-bottom: 2px solid #D61A3C; display: inline-block; padding-bottom: 5px;">CHÍNH SÁCH</h4>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: rgba(255,255,255,0.8); text-decoration: none; font-size: 14px;">Chính sách bảo hành</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: rgba(255,255,255,0.8); text-decoration: none; font-size: 14px;">Đổi trả 1-1</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: rgba(255,255,255,0.8); text-decoration: none; font-size: 14px;">Vận chuyển</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4 style="color: white; margin-bottom: 15px; border-bottom: 2px solid #D61A3C; display: inline-block; padding-bottom: 5px;">HỖ TRỢ</h4>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: rgba(255,255,255,0.8); text-decoration: none; font-size: 14px;">Hướng dẫn mua hàng</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: rgba(255,255,255,0.8); text-decoration: none; font-size: 14px;">Thanh toán</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: rgba(255,255,255,0.8); text-decoration: none; font-size: 14px;">Gửi yêu cầu bảo hành</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4 style="color: white; margin-bottom: 15px; border-bottom: 2px solid #D61A3C; display: inline-block; padding-bottom: 5px;">ĐĂNG KÝ NHẬN TIN</h4>
+                <div class="newsletter-form" style="display: flex; gap: 5px;">
+                    <input type="email" placeholder="Email..." style="padding: 10px; border: none; border-radius: 4px; flex-grow: 1;">
+                    <button style="background: #D61A3C; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold;">ĐĂNG KÝ</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom" style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 13px; opacity: 0.6;">
+            <p>© 2024 CÔNG TY TNHH CÔNG NGHỆ TEDIGI VIỆT NAM.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/detail.js"></script>
+</body>
+</html>
