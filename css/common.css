@@ -1,0 +1,79 @@
+/* ==========================================
+   BIẾN MÀU SẮC THEO LOGO PHOENIX
+   ========================================== */
+:root {
+    --primary-blue: #1E5BB1; /* Xanh từ Logo */
+    --primary-red: #D61A3C;  /* Đỏ từ Logo */
+    --dark-bg: #2c3e50;
+    --white: #ffffff;
+    --transition: 0.3s ease;
+}
+
+/* ==========================================
+   CẤU HÌNH LOGO & HEADER (KHẮC PHỤC LỖI QUÁ TO)
+   ========================================== */
+.logo a {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.logo img {
+    height: 50px;    /* Cố định chiều cao logo */
+    width: auto;     /* Tự động tính chiều rộng theo tỷ lệ */
+    max-width: 200px; /* Giới hạn chiều rộng tối đa */
+    display: block;
+    object-fit: contain;
+    transition: var(--transition);
+}
+
+/* Hiệu ứng khi di chuột vào logo */
+.logo img:hover {
+    transform: scale(1.05);
+}
+
+/* Điều chỉnh Header để logo nằm cân đối */
+.main-header {
+    padding: 10px 0;
+    background: var(--white);
+    border-bottom: 1px solid #eee;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* ==========================================
+   CÁC THÀNH PHẦN KHÁC
+   ========================================== */
+.cart-count {
+    background: var(--primary-red) !important;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+}
+
+.search-bar button {
+    background: var(--primary-blue) !important;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.search-bar button:hover {
+    opacity: 0.9;
+}
+
+/* Responsive cho điện thoại */
+@media (max-width: 768px) {
+    .logo img {
+        height: 35px; /* Thu nhỏ logo trên mobile */
+    }
+}
