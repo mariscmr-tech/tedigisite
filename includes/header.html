@@ -1,0 +1,46 @@
+<div class="top-bar" style="background: #f8f9fa; font-size: 13px; padding: 5px 0; border-bottom: 1px solid #eee;">
+    <div class="header-container">
+        <div class="top-bar-left">
+            <span style="margin-right: 15px;">📧 Email: contact@tedigi.vn</span>
+            <span>📍 123 Đường ABC, TP.HCM</span>
+        </div>
+        <div class="top-bar-right">
+            <span>Hỗ trợ kỹ thuật 24/7</span>
+        </div>
+    </div>
+</div>
+
+<header class="main-header">
+    <div class="header-container">
+        <div class="logo">
+            <a href="index.html">
+                <img src="images/logo.png" alt="TedigiVN Logo">
+            </a>
+        </div>
+
+        <div class="search-bar" style="display: flex; flex-grow: 1; max-width: 500px; margin: 0 30px;">
+            <input type="text" id="globalSearchInput" placeholder="Tìm kiếm máy POS, máy in..." style="flex-grow: 1; padding: 10px; border: 1px solid #ddd; border-radius: 4px 0 0 4px;">
+            <button onclick="window.location.href='products.html'" style="padding: 10px 20px; border-radius: 0 4px 4px 0;">🔍</button>
+        </div>
+
+        <div class="header-actions" style="display: flex; align-items: center; gap: 20px;">
+            <div id="user-menu"></div>
+            <a href="cart.html" class="cart-btn" style="text-decoration: none; position: relative; color: #333;">
+                <span style="font-size: 24px;">🛒</span>
+                <span id="cart-count" class="cart-count" style="position: absolute; top: -5px; right: -10px;">0</span>
+            </a>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()" style="background: none; border: none; font-size: 24px; cursor: pointer; display: none;">☰</button>
+        </div>
+    </div>
+</header>
+
+<nav class="main-nav" style="background: var(--primary-blue); color: white;">
+    <div class="header-container">
+        <ul style="list-style: none; display: flex; padding: 0; margin: 0;">
+            <li style="padding: 15px 20px;"><a href="index.html" style="color: white; text-decoration: none; font-weight: bold;">TRANG CHỦ</a></li>
+            <li style="padding: 15px 20px;"><a href="products.html?cat=all" style="color: white; text-decoration: none; font-weight: bold;">SẢN PHẨM</a></li>
+            <li style="padding: 15px 20px;"><a href="#" style="color: white; text-decoration: none; font-weight: bold;">KHUYẾN MÃI 🔥</a></li>
+            <li style="padding: 15px 20px;"><a href="#" style="color: white; text-decoration: none; font-weight: bold;">HỖ TRỢ</a></li>
+        </ul>
+    </div>
+</nav>
